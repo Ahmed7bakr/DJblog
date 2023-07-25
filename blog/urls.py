@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from posts.views import post_list,post_detail,new_post
+from posts.views import post_list,post_detail,new_post,edit_post
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('blogs/', post_list),
     path('blogs/<int:id>', post_detail),
+    path('blogs/<int:id>/edit', edit_post),
     path('blogs/new',new_post),
 ]
 if settings.DEBUG:
