@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.urls import reverse
 from .models import Post
 from .forms import PostForm
 
@@ -6,21 +7,23 @@ from .forms import PostForm
 
 def post_list(request):
     objects = Post.objects.all()
-    return render(request,'posts.html',{'posts':objects})
+    return render(request,'posts/posts.html',{'posts':objects})
 
 def post_detail(request,id):
     single = Post.objects.get(id=id)
-    return render (request,'post_detail.html',{'post':single})
+    return render (request,'posts/post_detail.html',{'post':single})
 
 
 def new_post(request):
     if request.method == 'POST':
       form = PostForm(request.POST,request.FILES)
       if form.is_valid():
-          form.save()
+          myform=form.save(commit=False)
+          myform.author = request.user
+          myform.save()
     else:
         form = PostForm()
-    return render(request,'new.html',{'form':form})
+    return render(request,'posts/new.html',{'form':form})
 
 def edit_post(request,id):
     single = Post.objects.get(id=id)
@@ -30,6 +33,10 @@ def edit_post(request,id):
             form.save()
     else:
         form = PostForm(instance=single)
-    return render (request,'edit.html',{'form':form})
+    return render (request,'posts/edit.html',{'form':form})
 
-    
+
+def delete_post(request,id):
+    single = Post.objects.get(id=id)
+    single.delete()
+    return redirect(reverse('blog:post_list'))
