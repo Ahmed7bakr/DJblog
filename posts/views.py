@@ -7,7 +7,7 @@ from .forms import PostForm
 
 def post_list(request):
     objects = Post.objects.all()
-    return render(request,'posts/posts.html',{'posts':objects})
+    return render(request,'posts/post_list.html',{'posts':objects})
 
 def post_detail(request,id):
     single = Post.objects.get(id=id)
@@ -21,6 +21,7 @@ def new_post(request):
           myform=form.save(commit=False)
           myform.author = request.user
           myform.save()
+          return redirect(reverse('blog:post_list'))
     else:
         form = PostForm()
     return render(request,'posts/new.html',{'form':form})
